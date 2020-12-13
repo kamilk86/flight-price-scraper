@@ -21,7 +21,7 @@ with open('db.json', 'r') as f:
     db = json.load(f)
 
 
-class LiveDataApp(tk.Tk):
+class ScraperClientApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self)
         self.ip = kwargs.pop('ip', None)
@@ -439,7 +439,7 @@ class PlotPane(tk.Frame):
 
 def main():
 
-    app = LiveDataApp(ip='192.168.0.5', port=64535)
+    app = ScraperClientApp(ip='192.168.0.5', port=64535)
     app.mainloop()
 
 

@@ -283,7 +283,8 @@ class ScraperServer:
             now = str(datetime.datetime.now()).split(' ')[1][:5]
 
             if now in {'05:00', '11:00', '17:00', '23:00', '09:11'}:
-                self.get_trips_data(now)
+                pass
+                #self.get_trips_data(now)
 
 
 def main():

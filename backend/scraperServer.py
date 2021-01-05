@@ -45,6 +45,7 @@ class ScraperServer:
             self.db = json.load(f)
 
     def close_policy_pop(self):
+        # Closes a policy popup window that shows up occassionally
         try:
             cookie_policy = self.browser.find_element_by_xpath(
                 "//button[@class='ej-button rounded-corners'][@ng-click='DoAcceptCookiePolicy()']")
@@ -53,7 +54,7 @@ class ScraperServer:
             pass
 
     def choose_dest(self, dest):
-
+        # Selects the chosen destination airport
         fly_to = self.browser.find_element_by_xpath("//input[@name='destination']")
         time.sleep(2)
         fly_to.clear()
@@ -64,7 +65,7 @@ class ScraperServer:
         first_item.click()
 
     def choose_src(self, src):
-
+        # Selects the chosen source airport
         fly_to = self.browser.find_element_by_xpath("//input[@name='origin']")
         time.sleep(2)
         fly_to.clear()
@@ -75,7 +76,7 @@ class ScraperServer:
         first_item.click()
 
     def choose_dates(self, dep_date, return_date, one_w=False):
-
+        # Selects the chosen dates
         if one_w:
             fly_out_path = "//div[@class='drawer-tab-content active'][@data-tab='Date Calendar Outbound']//div[@data-date='{}']/a[@class='selectable']".format(
             dep_date)
@@ -131,7 +132,7 @@ class ScraperServer:
                 time.sleep(1)
 
     def retrieve_prices(self, one_way):
-
+        # locates the HTML elements holding the prices and retrieves the prices 
         submit = self.browser.find_element_by_xpath(
             "//button[@class='ej-button rounded-corners arrow-button search-submit']")
         submit.click()
@@ -173,7 +174,7 @@ class ScraperServer:
         return [to, back]
 
     def get_trips_data(self, t):
-
+        # Triggers the scraping of prices based on the trip information provided
         for trip in self.db:
             src = trip.get('src_city', None)
             dst = trip.get('dst_city', None)

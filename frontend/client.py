@@ -38,11 +38,12 @@ class ScraperClientApp(tk.Tk):
 
         self.geometry('1100x850')
         self.frames = {}
-        # TO DO: add each frame to frames using for loop
+       
         for F in (OptionsPane, PlotPane):
             frame = F(container, self)
             self.frames[F] = frame
 
+        # Server performing data scrapring
         self.busy_times = {'05:00', '05:01', '05:02', '05:03', '05:04', '05:05', '11:00', '11:01', '11:02', '11:03',
                            '11:04', '11:05', '17:00', '17:01', '17:02', '17:03', '17:04', '17:05', '23:00', '23:01',
                            '23:02', '23:03', '23:04', '23:05'}
@@ -400,7 +401,25 @@ class PlotPane(tk.Frame):
 
         return lbl
 
-                    
+    def get_x_labels(self, x_data):
+        # Creates array of labels showing every nth label depending on x data length. PRevents overlapping of labels
+        x_labels = []
+        if len(x_data) > 30 and len(x_data) < 100:
+            show_every = 5
+        elif len(x_data) > 100:
+            show_every = 10
+
+        ctr = 0
+        for lbl in x_data:
+            ctr += 1
+            if ctr == show_every:
+                x_labels.append(lbl)
+                ctr = 0
+            else:
+                x_labels.append("")
+                
+        return x_labels
+
     def populate_figs(self):
 
         for idx, trip in enumerate(db):
@@ -408,11 +427,14 @@ class PlotPane(tk.Frame):
             ys = []
             xs2 = []
             ys2 = []
+            x_labels = []
 
             if trip['one_way']:
+               
                 for item in trip['trip_data']['to'].items():
                     xs.append(item[0])
                     ys.append(item[1])
+
                 ax = self.subplots['ax' + str(idx)]
                 ax.clear()
                 title = f"Airline: {trip['airline']} Out: {trip['to_date']} Back: 'One way' ID: {trip['trip_id']}"
@@ -424,14 +446,16 @@ class PlotPane(tk.Frame):
 
                 ax.plot(xs, ys, color='dodgerblue', label=lbl, marker='o')
                 ax.legend(loc='upper left')
-                if len(ys) > 6:
-                    ax.set_xticklabels(xs, rotation=45)
+
+                x_labels = self.get_x_labels(xs)
+                ax.set_xticklabels(x_labels, rotation=45)
 
             if not trip['one_way']:
-
+                
                 for item in trip['trip_data']['to'].items():
                     xs.append(item[0])
                     ys.append(item[1])
+
                 for item in trip['trip_data']['back'].items():
                     xs2.append(item[0])
                     ys2.append(item[1])
@@ -450,8 +474,9 @@ class PlotPane(tk.Frame):
                 ax.plot(xs, ys, color='dodgerblue', label=lbl1, marker='o')
                 ax.plot(xs2, ys2, color='darkorange', label=lbl2, marker='o')
                 ax.legend(loc='upper left')
-                if len(ys) > 6:
-                    ax.set_xticklabels(xs, rotation=45)
+                
+                x_labels = self.get_x_labels(xs)
+                ax.set_xticklabels(x_labels, rotation=45)
 
 
 
